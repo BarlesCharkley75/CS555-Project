@@ -129,18 +129,18 @@ def GED_to_date(ged_date):
 
 individuals_list  = []
 # go through the newly created array
-individual_ID = ''
-individual_name = ''
-individual_gender = ''
-individual_birthdate = ''
-individual_age = ''
-individual_alive = True
-individual_death = 'N/A'
-individual_child = 'N/A'
-individual_spouse = 'N/A'
-individual_array = []
 for e in data_array:
     # initialize all values to defaults
+    individual_ID = ''
+    individual_name = ''
+    individual_gender = ''
+    individual_birthdate = ''
+    individual_age = ''
+    individual_alive = True
+    individual_death = 'N/A'
+    individual_child = 'N/A'
+    individual_spouse = 'N/A'
+    individual_array = []
     # if we find an individual:
     if e[2] == 'INDI':
         # get all the values
