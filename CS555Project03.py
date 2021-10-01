@@ -1,5 +1,4 @@
 from datetime import date
-# hi mom i'm on TV
 
 def arrayData():
     # open given file - look into wildcarding it instead of hardcoding name later
@@ -33,7 +32,7 @@ def arrayData():
     return ged_array
 
 data_array = arrayData()
-# print(data_array)
+#print(data_array)
 todays_date = date.today()
 
 # formats the day for comparison
@@ -123,31 +122,34 @@ def GED_to_date(ged_date):
             year = ged_date[-j+2:]
             year = GED_to_year(year)
             break
-    if todays_date.month > month:
+    if int(todays_date.month) > int(month):
         return int(int(todays_date.year) - int(year)) - 1
     else:
         return int(int(todays_date.year) - int(year))
 
 individuals_list  = []
 # go through the newly created array
+individual_ID = ''
+individual_name = ''
+individual_gender = ''
+individual_birthdate = ''
+individual_age = ''
+individual_alive = True
+individual_death = 'N/A'
+individual_child = 'N/A'
+individual_spouse = 'N/A'
+individual_array = []
 for e in data_array:
     # initialize all values to defaults
-    individual_ID = ''
-    individual_name = ''
-    individual_gender = ''
-    individual_birthdate = ''
-    individual_age = ''
-    individual_alive = True
-    individual_death = 'N/A'
-    individual_child = 'N/A'
-    individual_spouse = 'N/A'
-    individual_array = []
     # if we find an individual:
-    if e[2] == "INDI":
+    if e[2] == 'INDI':
         # get all the values
         individual_ID = e[1]
+        thiselem = e
+        nextelem = data_array[data_array.index(e)-len(data_array)+1]
+        e = nextelem
         # if the level is 0, we've moved on past info for this person
-        while e[0] != "0":
+        while e[0] != '0':
             if e[1] == "NAME":
                 individual_name = e[2]
             elif e[1] == "SEX": 
@@ -180,8 +182,11 @@ for e in data_array:
         individual_array = individual_array + [individual_death] 
         individual_array = individual_array + [individual_child]
         individual_array = individual_array + [individual_spouse]
-    individuals_list = individuals_list + [individual_array]  
-           
+        individuals_list = individuals_list + [individual_array]  
+print("individuals:\n")
+for i in individuals_list:
+    print(i)
+print("\n")           
 family_list  = []
 # go through the newly created array
 for g in data_array:
@@ -196,6 +201,9 @@ for g in data_array:
     family_array = []
     if g[2] == "FAM":
         family_ID = g[1]
+        thiselem = g
+        nextelem = data_array[data_array.index(g)-len(data_array)+1]
+        g = nextelem
         while g[0] != "0":
             if g[1] == "HUSB":
                 family_husband_id = g[2]
@@ -220,6 +228,9 @@ for g in data_array:
             elif g[1] == "DIV":
                 nextelem = data_array[data_array.index(g)-len(data_array)+1]
                 family_divorced = nextelem[2]
+            thiselem = g
+            nextelem = data_array[data_array.index(g)-len(data_array)+1]
+            g = nextelem
         family_array = family_array + [family_ID]
         family_array = family_array + [family_married]
         family_array = family_array + [family_divorced]
@@ -228,11 +239,7 @@ for g in data_array:
         family_array = family_array + [family_wife_id]
         family_array = family_array + [family_wife_name]
         family_array = family_array + [family_children]
-    family_list = family_list + [family_array]
-
-
-
-    
-    
-    
-    
+        family_list = family_list + [family_array]
+print("Families:\n")
+for i in family_list:
+    print(i)
