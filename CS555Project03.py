@@ -1,4 +1,5 @@
 from datetime import date
+from prettytable import PrettyTable
 
 todays_date = date.today()
 # formats the day for comparison
@@ -205,8 +206,12 @@ individuals, families = database()
 # this print
 if __name__ == "__main__":
     print("Individuals:\n")
+    indi_table = PrettyTable(["ID", "Name", "Gender", "Birthday", "Age", "Alive", "Death", "Child", "Spouse"])
     for i in individuals:
-        print(i)
+        indi_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]])
+    print(indi_table)
     print("Families:\n")
+    fam_table = PrettyTable(["ID", "Married", "Divorced", "Husband ID", "Husband Name", "Wife ID", "Wife Name", "Children"])
     for i in families:
-        print(i)
+        fam_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]])
+    print(fam_table)
