@@ -75,7 +75,7 @@ def GED_to_date(ged_date):
     if int(todays_date.month) > int(month):
         return int(int(todays_date.year) - int(year))
     elif int(todays_date.month) == int(month):
-        if int(todays_date.day) > int(day):
+        if int(todays_date.day) >= int(day):
             return int(int(todays_date.year) - int(year))
         else:
             return int(int(todays_date.year) - int(year)) - 1
