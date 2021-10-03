@@ -1,40 +1,6 @@
 from datetime import date
 
-def arrayData():
-    # open given file - look into wildcarding it instead of hardcoding name later
-    file = open('example.ged', mode = 'r', encoding = 'utf-8-sig')
-    # get list of all lines
-    lines = file.readlines()
-    file.close()
-
-    ged_array = []
-    for line in lines:
-        line_array = []
-        substring = " "
-        for i in range(0, len(line)):
-            if line[i] == " ":
-                # add each letter of the tag to a substring
-                for j in range(2, len(line)):
-                    if line[j] == " ":
-                        break
-                    substring += str(line[j])
-                break
-        substring = substring.strip()
-        rest = line[(len(substring) + 2):].strip()
-        # add level
-        line_array = line_array + [line[0]]
-        # add tag 
-        line_array = line_array + [substring]
-        # add rest
-        line_array = line_array + [rest]
-        # add to overall array
-        ged_array = ged_array + [line_array]
-    return ged_array
-
-data_array = arrayData()
-#print(data_array)
 todays_date = date.today()
-
 # formats the day for comparison
 def GED_to_day(day):
     if day == "1":
@@ -99,147 +65,148 @@ def GED_to_year(year):
 
 # format a GED date for comparison
 def GED_to_date(ged_date):
-    temp = 0
     day = " "
     month = " "
     year = " "
-    for i in range(0, len(ged_date)):
-        if ged_date[i] == " ":
-            # get day
-            day = ged_date[0:i]
-            # format day
-            day = GED_to_day(day)
-            # save where we are in the string
-            temp = i
-            break
-    for j in range(temp+1, len(ged_date)):
-        if ged_date[j] == " ":
-            # get month
-            month = ged_date[temp:j].strip()
-            # format month
-            month = GED_to_month(month)
-            # get the remainder of the string, which is the year
-            year = ged_date[-j+2:]
-            year = GED_to_year(year)
-            break
+    s = ged_date.split()
+    day = GED_to_day(s[0])
+    month = GED_to_month(s[1])
+    year = GED_to_year(s[2])
     if int(todays_date.month) > int(month):
-        return int(int(todays_date.year) - int(year)) - 1
-    else:
         return int(int(todays_date.year) - int(year))
+    elif int(todays_date.month) == int(month):
+        if int(todays_date.day) > int(day):
+            return int(int(todays_date.year) - int(year))
+        else:
+            return int(int(todays_date.year) - int(year)) - 1
+    else:
+        return int(int(todays_date.year) - int(year)) - 1
 
-individuals_list  = []
-# go through the newly created array
-for e in data_array:
-    # initialize all values to defaults
-    individual_ID = ''
-    individual_name = ''
-    individual_gender = ''
-    individual_birthdate = ''
-    individual_age = ''
-    individual_alive = True
-    individual_death = 'N/A'
-    individual_child = 'N/A'
-    individual_spouse = 'N/A'
-    individual_array = []
-    # if we find an individual:
-    if e[2] == 'INDI':
-        # get all the values
-        individual_ID = e[1]
-        thiselem = e
-        nextelem = data_array[data_array.index(e)-len(data_array)+1]
-        e = nextelem
-        # if the level is 0, we've moved on past info for this person
-        while e[0] != '0':
-            if e[1] == "NAME":
-                individual_name = e[2]
-            elif e[1] == "SEX": 
-                individual_gender = e[2]
-            elif e[1] == "BIRT":
-                thiselem = e
-                nextelem = data_array[data_array.index(e)-len(data_array)+1]
-                individual_birthdate = nextelem[2]
-                individual_age = GED_to_date(nextelem[2])
-            # ********* Make sure only dead people have a DEAT tag **************
-            elif e[1] == "DEAT":
-                thiselem = e
-                nextelem = data_array[data_array.index(e)-len(data_array)+1]
-                individual_death = nextelem[2]
-                individual_alive = False
-            elif e[1] == "FAMS":
-                individual_spouse = e[1]
-            elif e[1] == "FAMC":
-                individual_child = e[1]
-            # increment the while loop
-            thiselem = e
-            nextelem = data_array[data_array.index(e)-len(data_array)+1]
-            e = nextelem
-        # once we're out of the while, add all our data
-        individual_array = individual_array + [individual_ID]  
-        individual_array = individual_array + [individual_name]  
-        individual_array = individual_array + [individual_gender]
-        individual_array = individual_array + [individual_age]
-        individual_array = individual_array + [individual_alive]
-        individual_array = individual_array + [individual_death] 
-        individual_array = individual_array + [individual_child]
-        individual_array = individual_array + [individual_spouse]
-        individuals_list = individuals_list + [individual_array]  
-print("individuals:\n")
-for i in individuals_list:
-    print(i)
-print("\n")           
-family_list  = []
-# go through the newly created array
-for g in data_array:
-    family_ID = ''
-    family_married = ''
-    family_divorced = "N/A"
-    family_husband_id = ''
-    family_husband_name = ''
-    family_wife_id = ''
-    family_wife_name = ''
-    family_children = []
+# contain all of our work in a function so it can easily be exported for user stories later
+def database():
+    file = open('example_pekata.ged', mode = 'r', encoding = 'utf-8-sig')
+    # this is needed for exactly two operations
+    data_array = []
+    for line in file:
+        e = line.split()
+        data_array.append(e)
+    file.close()
+    # for some reason if the file is not closed and opened again then the program becomes weird
+    file = open('example_pekata.ged', mode = 'r', encoding = 'utf-8-sig')
+    # initialize toggles and overall arrays of data
+    toggle_individual = 0
+    toggle_family = 0
+    individuals_array = []
     family_array = []
-    if g[2] == "FAM":
-        family_ID = g[1]
-        thiselem = g
-        nextelem = data_array[data_array.index(g)-len(data_array)+1]
-        g = nextelem
-        while g[0] != "0":
-            if g[1] == "HUSB":
-                family_husband_id = g[2]
-                for h in data_array:
-                    if h[1] == family_husband_id:
-                        thiselem = h
-                        nextelem = data_array[data_array.index(h)-len(data_array)+1]
-                        family_husband_name = nextelem[2]
-            elif g[1] == "WIFE":
-                family_wife_id = g[2]
-                for h in data_array:
-                    if h[1] == family_wife_id:
-                        thiselem = h
-                        nextelem = data_array[data_array.index(h)-len(data_array)+1]
-                        family_wife_name = nextelem[2]
-            elif g[1] == "CHIL":
-                family_children = family_children + [g[2]]
-            elif g[1] == "MARR":
-                thiselem = g
-                nextelem = data_array[data_array.index(g)-len(data_array)+1]
-                family_married = nextelem[2]
-            elif g[1] == "DIV":
-                nextelem = data_array[data_array.index(g)-len(data_array)+1]
-                family_divorced = nextelem[2]
-            thiselem = g
-            nextelem = data_array[data_array.index(g)-len(data_array)+1]
-            g = nextelem
-        family_array = family_array + [family_ID]
-        family_array = family_array + [family_married]
-        family_array = family_array + [family_divorced]
-        family_array = family_array + [family_husband_id]
-        family_array = family_array + [family_husband_name]
-        family_array = family_array + [family_wife_id]
-        family_array = family_array + [family_wife_name]
-        family_array = family_array + [family_children]
-        family_list = family_list + [family_array]
-print("Families:\n")
-for i in family_list:
-    print(i)
+    # ID(0), NAME(1), GENDER(2), BIRTHDAY(3), AGE(4), ALIVE(5), DEATH(6), CHILD(7), SPOUSE(8)
+    individual_data = [0, 0, 0, 0, 0, True, "NA", "NA", "NA"]
+    # ID(0), MARRIED(1), DIVORCED(2), HUSBANDID(3), HUSBANDNAME(4), WIFEID(5), WIFENAME(6), CHILDREN(7)
+    family_data = [0, 0, "NA", 0, 0, 0, 0, []]
+    for line in file:
+        # isolate the values of the level, the tag, and the data in an array
+        s = line.split()
+        if (s[0] == '2'):
+            if(s[1] == 'DATE'):
+                # reconstruct the date
+                dateval = s[2] + " " + s[3] + " " + s[4]
+                if(dateID == 'BIRT'):
+                    individual_data[3] = dateval
+                    individual_data[4] = GED_to_date(dateval)
+                if(dateID == 'DEAT'):
+                    individual_data[6] = dateval
+                    individual_data[5] = False
+                if(dateID == 'MARR'):
+                    family_data[1] = dateval
+                if(dateID == 'DIV'):
+                    family_data[2] = dateval
+        if(s[0] == '1'):
+            if(s[1] == 'NAME'):
+                individual_data[1] = s[2] + " " + s[3]
+            if(s[1] == 'SEX'):
+                individual_data[2] = s[2]
+            # check what type of date we will be looking at
+            if(s[1] == 'BIRT'):
+                dateID = 'BIRT'
+            if(s[1] == 'DEAT'):
+                dateID = 'DEAT'
+            if(s[1] == 'MARR'):
+                dateID = 'MARR'
+            if(s[1] == 'DIV'):
+                dateID = 'DIV'
+            if(s[1] == 'FAMS'):
+                individual_data[8] = s[2]
+            if(s[1] == 'FAMC'):
+                individual_data[7] = s[2]
+            if(s[1] == 'HUSB'):
+                family_data[3] = s[2]
+                for data in data_array:
+                    if data[1] == s[2]:
+                        nextelem = data_array[data_array.index(data)-len(data_array)+1]
+                        family_data[4] = nextelem[2] + " " + nextelem[3]
+            if(s[1] == 'WIFE'):
+                family_data[5] = s[2]
+                for data in data_array:
+                    if data[1] == s[2]:
+                        nextelem = data_array[data_array.index(data)-len(data_array)+1]
+                        family_data[6] = nextelem[2] + " " + nextelem[3]
+            if(s[1] == 'CHIL'):
+                family_data[7].append(s[2])
+        if(s[0] == '0'):
+            # if we find another 0 after looking at an individual, we've found all the data
+            # about said individual
+            if(toggle_individual == 1):
+                individuals_array.append(individual_data)
+                individual_data = [0, 0, 0, 0, 0, True, "NA", "NA", "NA"]
+                toggle_individual = 0
+            # if we find another 0 after looking at a family, we've found all the data
+            # about said family
+            if(toggle_family == 1):
+                family_array.append(family_data)
+                family_data = [0, 0, "NA", 0, 0, 0, 0, []]
+                toggle_family = 0
+            # ignore values that have no relevant data
+            if(s[1] in ['NOTE', 'HEAD', 'TRLR']):
+                pass
+            else:
+                # indicate if we are looking at an individual or family
+                if(s[2] == 'INDI'):
+                    toggle_individual = 1
+                    individual_data[0] = (s[1])
+                if(s[2] == 'FAM'):
+                    toggle_family = 1
+                    family_data[0] = (s[1])
+
+    for i in individuals_array:
+        jan = filter(str.isdigit, i[0])
+        ken = "".join(jan)
+        po = int(ken)
+        i[0] = po
+
+    for j in family_array:
+        jan = filter(str.isdigit, j[0])
+        ken = "".join(jan)
+        po = int(ken)
+        j[0] = po
+
+    individuals_array.sort()
+    family_array.sort()
+
+    for i in individuals_array:
+        i[0] = '@I' + str(i[0]) + '@'
+
+    for j in family_array:
+        j[0] = '@F' + str(j[0]) + '@'
+
+    return individuals_array, family_array
+
+individuals, families = database()
+
+# if this code is not put into main, every user story that imports database will also run
+# this print
+if __name__ == "__main__":
+    print("Individuals:\n")
+    for i in individuals:
+        print(i)
+    print("Families:\n")
+    for i in families:
+        print(i)
