@@ -63,7 +63,7 @@ def GED_to_year(year):
     # so for simplicity, say the year is 9999, and fail the cases that way.
     else: return "9999"
 
-# format a GED date for comparison
+# format a GED date to get the correct age
 def GED_to_date(ged_date):
     day = " "
     month = " "
@@ -84,7 +84,7 @@ def GED_to_date(ged_date):
 
 # contain all of our work in a function so it can easily be exported for user stories later
 def database():
-    file = open('example_pekata.ged', mode = 'r', encoding = 'utf-8-sig')
+    file = open('example.ged', mode = 'r', encoding = 'utf-8-sig')
     # this is needed for exactly two operations
     data_array = []
     for line in file:
@@ -92,7 +92,7 @@ def database():
         data_array.append(e)
     file.close()
     # for some reason if the file is not closed and opened again then the program becomes weird
-    file = open('example_pekata.ged', mode = 'r', encoding = 'utf-8-sig')
+    file = open('example.ged', mode = 'r', encoding = 'utf-8-sig')
     # initialize toggles and overall arrays of data
     toggle_individual = 0
     toggle_family = 0
