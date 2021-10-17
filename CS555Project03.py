@@ -83,6 +83,32 @@ def GED_to_date(ged_date):
     else:
         return int(int(todays_date.year) - int(year)) - 1
 
+# Compares time between two dates, arguments in order of occurence
+def GED_to_dates(ged_date1, ged_date2):
+    day1 = " "
+    month1 = " "
+    year1 = " "
+    s1 = ged_date1.split()
+    day1 = GED_to_day(s1[0])
+    month1 = GED_to_month(s1[1])
+    year1 = GED_to_year(s1[2])
+    day2 = " "
+    month2 = " "
+    year2 = " "
+    s2 = ged_date2.split()
+    day2 = GED_to_day(s2[0])
+    month2 = GED_to_month(s2[1])
+    year2 = GED_to_year(s2[2])
+    if int(month2) > int(month1):
+        return int(int(year2) - int(year1))
+    elif int(month2) == int(month1):
+        if int(day2) >= int(day1):
+            return int(int(year2) - int(year1))
+        else:
+            return int(int(year2) - int(year1)) - 1
+    else:
+        return int(int(year2) - int(year1)) - 1
+
 # contain all of our work in a function so it can easily be exported for user stories later
 def database():
     file = open('example.ged', mode = 'r', encoding = 'utf-8-sig')
