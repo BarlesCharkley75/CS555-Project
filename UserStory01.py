@@ -1,6 +1,7 @@
 # User story 01, authored by Daniel Pekata
 from datetime import date
 import unittest
+from CS555Project03 import database
 
 # formats the day for comparison
 def GED_to_day(day):
@@ -138,6 +139,13 @@ def GED_before_date(ged_date):
         return False
     else: return True
 
+individuals, families = database()
+for individual in individuals:
+    GED_before_date(individual[3])
+    GED_before_date(individual[6])
+for family in families:
+    GED_before_date(family[1])
+    GED_before_date(family[2])
 
 class TestStringMethods(unittest.TestCase):
     # Testing for US01
