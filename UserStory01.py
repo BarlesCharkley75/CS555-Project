@@ -97,8 +97,8 @@ def GED_before_date(ged_date):
     if not isinstance(ged_date, str):
         return False
     # remove the starting part of the ged date, namely the "2 DATE " part
-    format_date = ged_date[7:]
-    result = GED_to_date(format_date)
+    # format_date = ged_date[7:]
+    result = GED_to_date(ged_date)
     today = str(date.today())
     # compare today's year with the given year
     while True:
@@ -151,23 +151,23 @@ class TestStringMethods(unittest.TestCase):
     # Testing for US01
     # test that a GED date of may 16th, 1923 is valid
     def test1(self):
-        self.assertEqual(GED_before_date("2 DATE 16 MAY 1923"), True)
+        self.assertEqual(GED_before_date("16 MAY 1923"), True)
     
     # test that a GED date of may 16th, 2023 is not valid
     def test2(self):
-        self.assertEqual(GED_before_date("2 DATE 16 MAY 2023"), False)
+        self.assertEqual(GED_before_date("16 MAY 2023"), False)
 
     # test that a GED date of sep 25th, 2021 is valid (this is the current day as of testing)
     def test3(self):
-        self.assertEqual(GED_before_date("2 DATE 25 SEP 2021"), True)
+        self.assertEqual(GED_before_date("25 SEP 2021"), True)
     
     #test that a GED date of dec 31st, 2021 is not valid 
     def test4(self):
-        self.assertEqual(GED_before_date("2 DATE 31 DEC 2021"), False)
+        self.assertEqual(GED_before_date("31 DEC 2021"), False)
     
     # test that a GED date of july 1st, 100 is valid
     def test5(self):
-        self.assertEqual(GED_before_date("2 DATE 1 JUL 100"), True)
+        self.assertEqual(GED_before_date("1 JUL 100"), True)
     # test that a nondate input is considered false
     def test6(self):
         self.assertEqual(GED_before_date(1), False)
