@@ -1,9 +1,9 @@
-from CS555Project03 import database, GED_to_dates #moved GED_to_dates to the project03
+from CS555Project03 import database, GED_to_dates 
 from datetime import date
 import unittest
 
 todays_date = date.today()
-#Bad smell, code already exists in CS555Project03.py
+
 
 
 
