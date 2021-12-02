@@ -13,14 +13,15 @@ test5individuals, test5families = database('testfiles/US02test5.ged')
 
 def user_story02(individuals, families):
     for family in families:
-        marriage_date = family[1]
         husband_id = family[3]
         wife_id = family[5]
         for individual in individuals:
             if (individual[0] == wife_id) or (individual[0] == husband_id):
-                marriage_age = GED_to_dates(individual[3], marriage_date) #age at the marriage 
+                marriage_date = family[1]
+                birthday = individual[3]
+                marriage_age = GED_to_dates(birthday, marriage_date) #age at the marriage 
                 if marriage_age <= 0:
-                    print(individual[1] + " was married before they were born in family  " + family[0])
+                    print(individual[1] + " was married in family  " + family[0] + " before they were born")
                     return False
                 else:
                     continue
