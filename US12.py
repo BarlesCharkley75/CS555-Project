@@ -13,34 +13,25 @@ def getByID(id):
 
 #  individual array: # ID(0), NAME(1), GENDER(2), BIRTHDAY(3), AGE(4), ALIVE(5), DEATH(6), CHILD(7), SPOUSE(8)
 #  family array: ID(0), MARRIED(1), DIVORCED(2), HUSBANDID(3), HUSBANDNAME(4), WIFEID(5), WIFENAME(6), CHILDREN(7)
-def US12(family):
-    print(family)
-    today = date.today()
-    # father_birthday = getByID(family[3])[3].split()
-    # mother_birthday = getByID(family[5])[3].split()
-    # for ind in individuals:
-    #     if ind[0] == '@I2@':
-    #         print(ind)
-    mother = getByID(family[5])
-    father = getByID(family[3])
-    father_birthday = father[3].split()
-    mother_birthday = mother[3].split()
-    mday = GED_to_day(mother_birthday[0])
-    mmonth = GED_to_month(mother_birthday[1])
-    myear = GED_to_year(mother_birthday[2])
-    fday = GED_to_day(father_birthday[0])
-    fmonth = GED_to_month(father_birthday[1])
-    fyear = GED_to_year(father_birthday[2])
-    mother_age = today.year - int(myear) - ((today.month, today.day) < (int(mmonth), int(mday)))
-    father_age = today.year - int(fyear) - ((today.month, today.day) < (int(fmonth), int(fday)))
-    for child in family[7]:
-        child_birthday = getByID(child)
-        cday = GED_to_day(child[0])
-        cmonth = GED_to_month(child[1])
-        cyear = GED_to_year(child[2])
-        child_age = today.year - int(cyear) - ((today.month, today.day) < (int(cmonth), int(cday)))
-        if(father_age-child_age >= 80 or mother_age-child_age>=60):
-            return False
+def US12(fam):
+    husb = fam[3]
+    wife = fam[5]
+    chil = fam[7]
+    if(husb == "NA" or wife == "NA" or chil == []):
+        return True
+    for i in individuals:
+        if(i[0] == husb):
+            hage = i[4]
+        if(i[0] == wife):
+            wage = i[4]
+    for k in chil:
+        for l in individuals:
+            if(l[0] == k):
+                cage = l[4]
+    if((wage - cage >= 60) or (hage - cage >= 80)):
+        print("US12: Children older than parents")
+        return False
+    print("US12: No children older than parents")
     return True
 
 
